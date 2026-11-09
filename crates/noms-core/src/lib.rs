@@ -1,7 +1,7 @@
 //! Reusable notification destinations and tag-aware dispatch.
 //!
 //! ```no_run
-//! use app_services::{Client, Notification};
+//! use noms_core::{Client, Notification};
 //!
 //! # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! let mut client = Client::default();

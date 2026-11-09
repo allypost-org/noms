@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 description.workspace = true
 license.workspace = true
+publish = false
 
 [dependencies]
 app-server = { path = "../../crates/app-server", version = "*" }
@@ -15,14 +16,7 @@ serde.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-tracing-subscriber = {
-  version = "0.3.23",
-  features = [
-    "env-filter",
-    "parking_lot",
-    "smallvec",
-  ]
-}
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "parking_lot", "smallvec"] }
 validator = "0.21.0"
 
 [dev-dependencies]

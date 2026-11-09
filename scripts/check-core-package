@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Exercise an independent binary against the extracted .crate, never workspace source.
+# Pass --allow-dirty for local checks with uncommitted edits.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+root=$(pwd -P)
+cargo package -p noms-core --locked "$@"
+metadata=$(cargo metadata --format-version 1 --no-deps --locked)
+version=$(python3 -c 'import json,sys; print(next(p["version"] for p in json.load(sys.stdin)["packages"] if p["name"] == "noms-core"))' <<< "$metadata")
+target=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["target_directory"])' <<< "$metadata")
+mkdir -p dev
+consumer=$(mktemp -d "$root/dev/core-consumer.XXXXXX")
+tar -xzf "$target/package/noms-core-$version.crate" -C "$consumer"
+cp scripts/consumer/main.rs "$consumer/main.rs"
+python3 - "$consumer" "$version" <<'PY'
+import json, pathlib, sys
+consumer, version = pathlib.Path(sys.argv[1]), sys.argv[2]
+(consumer / "Cargo.toml").write_text('''[package]
+name = "noms-core-consumer"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.88"
+publish = false
+
+[workspace]
+resolver = "3"
+exclude = [''' + json.dumps("noms-core-" + version) + ''']
+
+[[bin]]
+name = "noms-core-consumer"
+path = "main.rs"
+
+[dependencies]
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+noms = { package = "noms-core", path = ''' + json.dumps("noms-core-" + version) + ''', default-features = false, features = ["email", "telegram"] }
+''')
+PY
+printf 'Independent consumer: %s\n' "$consumer"
+CARGO_TARGET_DIR="$target" cargo run --manifest-path "$consumer/Cargo.toml"

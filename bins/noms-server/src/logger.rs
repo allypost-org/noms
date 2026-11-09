@@ -19,7 +19,7 @@ pub const COMPONENT_LEVELS: &[(&str, Level)] = &[
     // Binaries
     ("noms", Level::WARN),
     // Libraries
-    ("app_services", Level::INFO),
+    ("noms_core", Level::INFO),
     ("app_server", Level::INFO),
     // Other
     ("app", Level::INFO),

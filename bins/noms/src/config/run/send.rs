@@ -1,4 +1,4 @@
-use app_services::{Notification, ServiceUrl, Tag};
+use noms_core::{Notification, ServiceUrl, Tag};
 
 #[derive(Debug, clap::Args, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "kebab-case")]

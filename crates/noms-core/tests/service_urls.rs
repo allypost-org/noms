@@ -4,7 +4,7 @@
 #[allow(unused_imports)]
 use std::{str::FromStr, sync::LazyLock};
 
-use app_services::service::service_url::{ServiceSettings, ServiceUrl};
+use noms_core::service::service_url::{ServiceSettings, ServiceUrl};
 
 #[allow(dead_code)]
 static MATCHES: LazyLock<Vec<(&'static str, ServiceUrl)>> = LazyLock::new(|| {

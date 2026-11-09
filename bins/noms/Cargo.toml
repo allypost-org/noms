@@ -4,27 +4,21 @@ version.workspace = true
 edition.workspace = true
 description.workspace = true
 license.workspace = true
+publish = false
 
 [dependencies]
 app-server = { path = "../../crates/app-server", version = "*", optional = true }
-app-services.workspace = true
 clap.workspace = true
 clap_complete = "4.6.11"
 directories = "6.0.0"
 dotenvy = "0.15.7"
+noms-core.workspace = true
 owo-colors = { version = "4.4.0", features = ["alloc", "supports-colors"] }
 serde.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-tracing-subscriber = {
-  version = "0.3.23",
-  features = [
-    "env-filter",
-    "parking_lot",
-    "smallvec",
-  ]
-}
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "parking_lot", "smallvec"] }
 validator = "0.21.0"
 
 [features]

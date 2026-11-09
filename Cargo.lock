@@ -111,31 +111,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "app-services"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "either",
- "futures-util",
- "jiff",
- "lettre",
- "rcgen",
- "regex",
- "reqwest",
- "rustls",
- "serde",
- "serde_json",
- "serde_qs",
- "tempfile",
- "thiserror 2.0.21",
- "tokio",
- "tracing",
- "url",
- "urlencoding",
-]
-
-[[package]]
 name = "asn1-rs"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1773,11 +1748,11 @@ name = "noms"
 version = "0.1.0"
 dependencies = [
  "app-server",
- "app-services",
  "clap",
  "clap_complete",
  "directories",
  "dotenvy",
+ "noms-core",
  "owo-colors",
  "serde",
  "thiserror 2.0.21",
@@ -1785,6 +1760,31 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "validator",
+]
+
+[[package]]
+name = "noms-core"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "either",
+ "futures-util",
+ "jiff",
+ "lettre",
+ "rcgen",
+ "regex",
+ "reqwest",
+ "rustls",
+ "serde",
+ "serde_json",
+ "serde_qs",
+ "tempfile",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "url",
+ "urlencoding",
 ]
 
 [[package]]

@@ -1,8 +1,8 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use app_services::ServiceUrl;
+use noms_core::ServiceUrl;
 #[cfg(any(feature = "email", feature = "telegram"))]
-use app_services::{Notification, service::AVAILABLE_SERVICES};
+use noms_core::{Notification, service::AVAILABLE_SERVICES};
 use std::time::Duration;
 #[cfg(feature = "telegram")]
 use std::time::Instant;
@@ -23,7 +23,7 @@ fn notification() -> Notification {
 }
 
 #[cfg(any(feature = "email", feature = "telegram"))]
-fn prepare(raw: &str) -> Result<app_services::service::AssociatedService, String> {
+fn prepare(raw: &str) -> Result<noms_core::service::AssociatedService, String> {
     let url: ServiceUrl = raw.parse().map_err(|e| format!("{e}"))?;
     AVAILABLE_SERVICES
         .iter()
@@ -60,7 +60,7 @@ fn malformed_url_diagnostics_do_not_echo_input() {
 fn duration_settings_round_trip_and_reject_overflow() {
     let url: ServiceUrl = "tgram://123:abc/42#timeout=4%20seconds".parse().unwrap();
     let encoded = serde_json::to_string(&url.settings).unwrap();
-    let decoded: app_services::service::service_url::ServiceSettings =
+    let decoded: noms_core::service::service_url::ServiceSettings =
         serde_json::from_str(&encoded).unwrap();
     assert_eq!(decoded.connection_timeout, Duration::from_secs(4));
     for invalid in ["18446744073709551615 months", "-1s", "0s"] {
@@ -174,7 +174,7 @@ fn smtp_receive(listener: &TcpListener) -> (String, String) {
 #[cfg(feature = "telegram")]
 #[tokio::test]
 async fn telegram_sends_plain_messages_and_honors_format_and_false_flags() {
-    use app_services::service::TelegramService;
+    use noms_core::service::TelegramService;
     use std::sync::Arc;
     for suffix in [
         "?disable_notification=false&protect_content=false",
@@ -321,7 +321,7 @@ async fn telegram_request_errors_do_not_expose_bot_tokens() {
     let address = listener.local_addr().unwrap();
     drop(listener);
     let service = Arc::new(
-        app_services::service::TelegramService::default()
+        noms_core::service::TelegramService::default()
             .with_api_base(format!("http://{address}/").parse().unwrap()),
     );
     let url: ServiceUrl = "tgram://123:unique_secret_token/42".parse().unwrap();
@@ -340,7 +340,7 @@ async fn malformed_telegram_responses_do_not_echo_reflected_credentials() {
     let receiver =
         thread::spawn(move || receive_http(&listener, b"{\"ok\":\"123:unique_secret_token\"}"));
     let service = Arc::new(
-        app_services::service::TelegramService::default()
+        noms_core::service::TelegramService::default()
             .with_api_base(format!("http://{address}/").parse().unwrap()),
     );
     let url: ServiceUrl = "tgram://123:unique_secret_token/42".parse().unwrap();

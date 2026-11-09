@@ -67,6 +67,8 @@ impl Client {
         }
     }
 
+    /// Validate and prepare a destination without connecting to it.
+    /// Keep this client for later sends to reuse its transports.
     pub fn add_url(&mut self, url: &ServiceUrl) -> Result<(), ServiceParseError> {
         self.destinations.push(self.registry.prepare(url)?);
         Ok(())
@@ -74,6 +76,8 @@ impl Client {
 
     /// Deliver to all selected destinations. Reports may arrive in completion order.
     /// A failed destination does not cancel other deliveries. No retries are performed.
+    /// Inspect each report: completion does not imply success. No matching tags
+    /// produces an empty vector. Provider futures require a Tokio runtime.
     pub async fn send(&self, notification: &Notification) -> Vec<DeliveryReport> {
         stream::iter(
             self.destinations

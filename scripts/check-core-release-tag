@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+"""Reject a core release tag that does not match the package version."""
+import pathlib
+import sys
+import tomllib
+
+root = pathlib.Path(__file__).resolve().parent.parent
+manifest = tomllib.loads((root / "crates/noms-core/Cargo.toml").read_text())
+version = manifest["package"]["version"]
+if isinstance(version, dict) and version.get("workspace"):
+    version = tomllib.loads((root / "Cargo.toml").read_text())["workspace"]["package"]["version"]
+expected = f"noms-core-v{version}"
+if len(sys.argv) != 2 or sys.argv[1] != expected:
+    sys.exit(f"Expected release tag {expected}")
+print(version)

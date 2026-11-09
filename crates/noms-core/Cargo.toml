@@ -1,9 +1,19 @@
 [package]
-name = "app-services"
+name = "noms-core"
 version.workspace = true
 edition.workspace = true
-description.workspace = true
+rust-version = "1.88"
+description = "Send notifications through reusable email and Telegram destinations"
+documentation = "https://docs.rs/noms-core"
+readme = "README.md"
+repository = "https://github.com/allypost-org/noms"
 license.workspace = true
+keywords = ["async", "email", "notifications", "telegram"]
+categories = ["asynchronous", "email"]
+include = ["src/**", "tests/**", "examples/**", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [dependencies]
 anyhow = "1.0.104"

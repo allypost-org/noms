@@ -1,0 +1,87 @@
+name: Checks
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3
+        with:
+          version: 2026.10.24
+          install_args: --include-task-tools
+      - run: mise run check-workflows
+      - run: mise exec -- cargo fmt --all --check
+      - run: mise exec -- cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+      - run: mise exec -- cargo test --workspace --all-features --locked
+      - name: Build public API documentation
+        run: mise exec -- cargo doc -p noms-core --all-features --no-deps --locked
+        env:
+          RUSTDOCFLAGS: -D warnings
+      - run: git diff --exit-code
+
+  core:
+    name: Core (${{ matrix.os }}, ${{ matrix.features || 'none' }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            features: ""
+          - os: ubuntu-24.04
+            features: email
+          - os: ubuntu-24.04
+            features: telegram
+          - os: macos-15
+            features: email,telegram
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      CORE_FEATURES: ${{ matrix.features }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3
+        with:
+          version: 2026.10.24
+      - run: mise exec -- cargo test -p noms-core --no-default-features --features "$CORE_FEATURES" --locked
+      - run: mise exec -- cargo build -p noms-core --lib --release --no-default-features --features "$CORE_FEATURES" --locked
+
+  minimum-rust:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Build the library with its declared minimum Rust version
+        run: |
+          rustup toolchain install 1.88 --profile minimal
+          for features in '' email telegram email,telegram; do
+            cargo +1.88 build -p noms-core --lib --no-default-features --features "$features" --locked
+          done
+
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3
+        with:
+          version: 2026.10.24
+      - name: Verify the archive from an independent consumer
+        run: mise exec -- scripts/check-core-package
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: noms-core-package
+          path: target/package/noms-core-*.crate
+          if-no-files-found: error

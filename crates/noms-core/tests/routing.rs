@@ -1,6 +1,6 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use app_services::{
+use noms_core::{
     Client, Notification, Registry, ServiceUrl,
     service::{PreparedService, Service, ServiceParseError, ServiceSendError},
 };

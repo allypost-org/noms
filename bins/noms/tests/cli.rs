@@ -126,7 +126,7 @@ fn cli_delivers_selected_mailboxes_and_keeps_message_bodies_out_of_trace_logs() 
     );
     let output = run(&[
         "--log-level",
-        "app_services=trace",
+        "noms_core=trace",
         "send",
         "--service-url",
         &destination,

@@ -34,10 +34,30 @@ URLs contain credentials. Diagnostic `Display`/`Debug` representations are redac
 
 ## Library
 
-The reusable library currently lives in `crates/app-services`. Use a path dependency until publishing is configured. Email and Telegram are default features; select either independently with `default-features = false, features = ["email"]` or `["telegram"]`.
+Use [`noms-core`](crates/noms-core/README.md) to send notifications directly from
+another Rust project. It requires Rust 1.88+ and a Tokio runtime. For example:
 
-`Client::default()` uses the built-in registry. Add destinations with `add_url`, then call `send(&notification)` to get a report per selected destination. The client reuses validated senders and transports and bounds concurrent dispatch. It does not retry failed sends.
+```toml
+[dependencies]
+noms = { package = "noms-core", version = "0.1", default-features = false, features = ["telegram"] }
+```
 
-Custom providers implement `Service::prepare` and return a typed `PreparedService` implementation. Register them through `Registry::register` and pass the registry to `Client::new`. No JSON configuration downcasting or provider serialization is required. Telegram also supports a custom Bot API base and a caller-owned HTTP client.
+Import `noms::{Client, Notification}` when using that alias. Both email and Telegram
+are enabled by default; provider features can be selected independently. Clients
+reuse prepared transports and return a report for each selected destination.
+See the library README for a complete example, error handling and configuration.
 
-Package naming and registry publishing are intentionally deferred.
+Until the initial publication, use a path dependency on `crates/noms-core` or a Git
+dependency on this repository. CI builds and verifies the package; core release
+tags publish it once Trusted Publishing is configured. The CLI and server are
+currently marked private for registry publishing.
+
+## Releases and package verification
+
+See [RELEASING.md](RELEASING.md) for CI, the initial crates.io publication, Trusted
+Publishing setup and release tags (`noms-core-v0.1.0`).
+
+```sh
+# Verify an uncommitted package from a standalone binary in ignored ./dev:
+scripts/check-core-package --allow-dirty
+```

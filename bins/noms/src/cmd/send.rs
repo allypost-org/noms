@@ -1,4 +1,4 @@
-use app_services::Client;
+use noms_core::Client;
 
 use crate::{
     config::run::send::SendConfig,
