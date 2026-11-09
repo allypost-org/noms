@@ -7,7 +7,9 @@ The CLI and server packages have `publish = false` and retain their current name
 ## Local checks
 
 The development toolchain is pinned in `mise.toml` and `mise.lock`, following the
-same pinned-action pattern as git-commitfs. Rust 1.88 is the library minimum;
+same pinned-action pattern as git-commitfs. Regenerate `mise.lock` only with the
+CI-pinned mise version, and update both workflow pins and `min_version` when
+changing the lockfile writer. Rust 1.88 is the library minimum;
 workspace development dependencies use the newer pinned toolchain.
 
 ```sh
