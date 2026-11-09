@@ -3,7 +3,7 @@ resolver = "2"
 members = ["bins/*", "crates/*"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "NOtification Management System - a way to send notifications to various services in a unified way"
 license = "MIT"
@@ -11,7 +11,7 @@ license = "MIT"
 [workspace.dependencies]
 clap = { version = "4.6.7", features = ["derive", "env"] }
 jiff = { version = "0.2", features = ["serde"] }
-noms-core = { path = "./crates/noms-core", version = "0.1.0" }
+noms-core = { path = "./crates/noms-core", version = "0.1.1" }
 serde = { version = "1.0.229", features = ["alloc", "derive"] }
 serde_json = { version = "1.0.154", features = ["alloc"] }
 thiserror = "2.0.21"
