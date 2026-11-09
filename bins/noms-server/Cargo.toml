@@ -1,0 +1,34 @@
+[package]
+name = "noms-server"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+license.workspace = true
+
+[dependencies]
+app-server = { path = "../../crates/app-server", version = "*" }
+clap.workspace = true
+clap_complete = "4.6.11"
+directories = "6.0.0"
+dotenvy = "0.15.7"
+serde.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber = {
+  version = "0.3.23",
+  features = [
+    "env-filter",
+    "parking_lot",
+    "smallvec",
+  ]
+}
+validator = "0.21.0"
+
+[dev-dependencies]
+jiff.workspace = true
+jsonwebtoken = { version = "11.1.0", features = ["rust_crypto"] }
+serde_json.workspace = true
+
+[lints]
+workspace = true
