@@ -79,19 +79,21 @@ impl Client {
     /// Inspect each report: completion does not imply success. No matching tags
     /// produces an empty vector. Provider futures require a Tokio runtime.
     pub async fn send(&self, notification: &Notification) -> Vec<DeliveryReport> {
-        stream::iter(
-            self.destinations
-                .iter()
-                .filter(|destination| destination.matches_tags(&notification.tags)),
-        )
-        .map(|destination| async move {
-            DeliveryReport {
-                destination: destination.name_with_tags(),
-                result: destination.send(notification).await,
-            }
-        })
-        .buffer_unordered(16)
-        .collect()
-        .await
+        let deliveries = self
+            .destinations
+            .iter()
+            .filter(|destination| destination.matches_tags(&notification.tags))
+            .map(|destination| async move {
+                DeliveryReport {
+                    destination: destination.name_with_tags(),
+                    result: destination.send(notification).await,
+                }
+            })
+            .collect::<Vec<_>>();
+
+        stream::iter(deliveries)
+            .buffer_unordered(16)
+            .collect()
+            .await
     }
 }

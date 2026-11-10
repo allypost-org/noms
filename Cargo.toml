@@ -3,7 +3,7 @@ resolver = "2"
 members = ["bins/*", "crates/*"]
 
 [workspace.package]
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "NOtification Management System - a way to send notifications to various services in a unified way"
 license = "MIT"

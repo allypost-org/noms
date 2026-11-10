@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- `Client::send` now returns a `Send` future, so it can be used with `tokio::spawn`
+  and other multi-threaded executors.
+
 ## 0.1.1
 
 - Release through GitHub Actions Trusted Publishing.
